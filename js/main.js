@@ -1,59 +1,12 @@
+Vue.prototype.$http=axios
 var vue = new Vue({
     el: '#app',
     data() {
       return {
         activeIndex: '1-1',
 
-        tableData: [{
-            id: '1',
-            code: '',
-            gln: '1234567890123',
-            newgln:'',
-            type: '生产基地',
-            name: 'SCGD-1',
-            address: '上海市普陀区金沙江路 1518 弄',
-            phone: '18818989988',
-            datetime: '2019-10-01',
-            lon: '116.345123',
-            lat: '35.9862736'
-          }, {
-            id: '2',
-            code: '',
-            gln: '1234567890123',
-            newgln:'',
-            type: '生产基地',
-            name: 'SCGD-1',
-            address: '上海市普陀区金沙江路 1518 弄',
-            phone: '18818989988',
-            datetime: '2019-10-01',
-            lon: '116.345123',
-            lat: '35.9862736'
-          }, {
-            id: '3',
-            code: '',
-            gln: '1234567890123',
-            newgln:'',
-            type: '生产基地',
-            name: 'SCGD-1',
-            address: '上海市普陀区金沙江路 1518 弄',
-            phone: '18818989988',
-            datetime: '2019-10-01',
-            lon: '116.345123',
-            lat: '35.9862736'
-          }, {
-            id: '4',
-            code: '',
-            gln: '1234567890123',
-            newgln:'',
-            type: '生产基地',
-            name: 'SCGD-1',
-            address: '上海市普陀区金沙江路 1518 弄',
-            phone: '18818989988',
-            datetime: '2019-10-01',
-            lon: '116.345123',
-            lat: '35.9862736'
-          }],
-
+        tableData: [],
+        tableLoading: false,
         searchForm: {
           minLon: '121.234',
           maxLon: '135,46',
@@ -103,6 +56,21 @@ var vue = new Vue({
        this.$forceUpdate()
       },
 
+      // 加载本地json数据
+      loadingData: function(){
+        let _this = this
+        _this.tableLoading = true
+        this.$http.get('./data/data.json')
+          .then(function (res) {
+            _this.tableData = res.data["SCGD"]
+          })
+          .catch(err => { console.log(err) }
+          )
+          .finally(res => {
+            _this.tableLoading = false
+            console.log('数据加载完成')
+          })
+      },
       initialMap: function() {
         // GL版命名空间为BMapGL
         // 按住鼠标右键，修改倾斜角和角度
@@ -113,6 +81,9 @@ var vue = new Vue({
 
       handleSelect(key, keyPath) {
         this.activeIndex = key
+        if(this.activeIndex === '1-1'){
+          this.loadingData()
+        }
 //        this.$message({
 //          message: '当前选中菜单：'+ key,
 //          type: 'success'
@@ -124,5 +95,6 @@ var vue = new Vue({
     },
     mounted: function() {
       this.initialMap()
+      this.loadingData()
     }
   })
