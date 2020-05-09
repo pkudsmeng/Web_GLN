@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>GLN</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <script src="plugin/vue/vue.js"></script>
+  <!-- 引入样式 -->
+  <link rel="stylesheet" href="plugin/element-2.10.1/index.css">
+  <!-- 引入组件库 -->
+  <script src="plugin/element-2.10.1/index.js"></script>
+  <link href="plugin/animate/animate@3.5.1.css" rel="stylesheet" type="text/css">
+  <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=VF8jI693CyatihLr1neBClQDUBvjoyzF"></script>
+
+  <link rel="stylesheet" href="css/main.css">
+  
+</head>
+<body>
+  <div id="app">
+    <div class="topBar">
+      <div class="topBar_title">GLN位置扩展编码综合管理系统</div>
+      <el-menu :default-active="activeIndex" class="el-menu-demo topBar_menu" mode="horizontal" @select="handleSelect"
+        background-color="#545c64" text-color="#fff" active-text-color="#ffd04b">
+        <el-submenu index="1">
+          <template slot="title">数据整合</template>
+          <el-menu-item index="1-1">加载数据</el-menu-item>
+          <el-menu-item index="1-2">编码生成</el-menu-item>
+          <el-menu-item index="1-3">编码解码</el-menu-item>
+        </el-submenu>
+        <el-submenu index="2">
+          <template slot="title">查询检索</template>
+          <el-menu-item index="2-1">单个GLN查询</el-menu-item>
+          <el-menu-item index="2-2">经纬度查询</el-menu-item>
+          <el-menu-item index="2-3">空间关系查询</el-menu-item>
+        </el-submenu>
+        <el-submenu index="3">
+          <template slot="title">溯源应用</template>
+          <el-menu-item index="3-1">溯源码生成</el-menu-item>
+          <el-menu-item index="3-2">农产品溯源</el-menu-item>
+        </el-submenu>
+      </el-menu>
+    </div>
+
+    <div class="mainContent">
+      <div class="leftForm">
+        <transition 
+        name="custom-classes-transition"
+        enter-active-class="animated bounceInLeft"
+        leave-active-class="animated bounceOutLeft">
+          <div v-if="activeIndex === '2-2'">
+            <el-card shadow="always">
+              <div slot="header" class="clearfix">
+                <span>经纬度查询</span>
+                <el-button style="float: right; padding: 3px 0" type="text" @click="closeOneMenu()" icon="el-icon-close"></el-button>
+              </div>
+              <el-form ref="form" :model="searchForm" label-width="80px" size="mini">
+                <el-form-item label="左下">
+                  <el-col :span="11">
+                    <el-input readonly v-model="searchForm.minLon"></el-input>
+                  </el-col>
+                  <el-col class="line" :span="2" style="text-align: center;">,</el-col>
+                  <el-col :span="11">
+                    <el-input readonly v-model="searchForm.minLat"></el-input>
+                  </el-col>
+                </el-form-item>
+                <el-form-item label="右上">
+                  <el-col :span="11">
+                    <el-input readonly v-model="searchForm.maxLon"></el-input>
+                  </el-col>
+                  <el-col class="line" :span="2" style="text-align: center;">,</el-col>
+                  <el-col :span="11">
+                    <el-input readonly v-model="searchForm.maxLat"></el-input>
+                  </el-col>
+                </el-form-item>
+              </el-form>
+              <div class="functionButton">
+                <el-button size="mini" type="danger" icon="el-icon-delete" @click="test" plain round>清除选择</el-button>
+                <el-button size="mini" icon="el-icon-search" type="primary" @click="test2" plain round>网格查询</el-button>
+              </div>
+              <hr>
+              <el-form 
+               v-loading="resultLoading"
+               element-loading-text="正在查询请稍后..."
+               ref="form1" :model="resultForm" label-width="110px" size="mini" style="margin-top:10px">
+                <el-form-item label="查出GLN(个)">
+                  <el-input readonly v-model="resultForm.count"></el-input>
+                </el-form-item>
+                <el-form-item label="查询用时(ms)">
+                  <el-input readonly v-model="resultForm.searchingTime"></el-input>
+                </el-form-item>
+              </el-form>
+            </el-card>
+          </div>
+
+          <div v-if="activeIndex === '2-1'">
+            <el-card shadow="always">
+              <div slot="header" class="clearfix">
+                <span>单个GLN查询</span>
+                <el-button style="float: right; padding: 3px 0" type="text" @click="closeOneMenu()" icon="el-icon-close"></el-button>
+              </div>
+              <el-form ref="form" :model="searchGLN" label-width="10px" size="mini">
+                <el-form-item label="">
+                    <el-input readonly v-model.trim="searchGLN.glncode" placeholder="请输入内容" @input="change($event)"></el-input>
+                </el-form-item>
+              </el-form>
+              <div class="functionButton">
+                <el-button size="mini" type="danger" icon="el-icon-delete" @click="test" plain round>清除选择</el-button>
+                <el-button size="mini" icon="el-icon-search" type="primary" @click="test2" plain round>查询</el-button>
+              </div>
+              <hr>
+              <el-form
+               v-loading="resultLoading"
+               element-loading-text="正在查询请稍后..."
+               ref="form1" :model="resultGLN" label-width="110px" size="mini" style="margin-top:10px">
+                <el-form-item label="查询用时(ms)">
+                  <el-input readonly v-model="resultGLN.searchingTime"></el-input>
+                </el-form-item>
+              </el-form>
+            </el-card>
+          </div>
+
+          <div v-if="activeIndex === '2-3'">
+            <el-card shadow="always">
+              <div slot="header" class="clearfix">
+                <span>半径搜索</span>
+                <el-button style="float: right; padding: 3px 0" type="text" @click="closeOneMenu()" icon="el-icon-close"></el-button>
+              </div>
+              <el-form ref="form" :model="searchDis" label-width="150px" size="mini">
+                <el-form-item label="GLN位置扩展编码">
+                  <el-col :span="11">
+                    <el-input readonly v-model="searchDis.glncode" style="width:100px"></el-input>
+                  </el-col>
+                </el-form-item>
+                <el-form-item label="搜索半径(m)">
+                  <el-col :span="11">
+                    <el-input readonly v-model="searchDis.dis" style="width:100px"></el-input>
+                  </el-col>
+                </el-form-item>
+              </el-form>
+              <div class="functionButton">
+                <el-button size="mini" type="danger" icon="el-icon-delete" @click="test" plain round>清除选择</el-button>
+                <el-button size="mini" icon="el-icon-search" type="primary" @click="test2" plain round>查询</el-button>
+              </div>
+              <hr>
+              <el-form
+               v-loading="resultLoading"
+               element-loading-text="正在查询请稍后..."
+               ref="form1" :model="resultGLN" label-width="110px" size="mini" style="margin-top:10px">
+                <el-form-item label="查询用时(ms)">
+                  <el-input readonly v-model="resultGLN.searchingTime"></el-input>
+                </el-form-item>
+              </el-form>
+            </el-card>
+          </div>
+
+        </transition>
+      </div>
+
+      <div class="bottomForm">
+        <transition
+        name="custom-classes-transition"
+        enter-active-class="animated bounceInBottom"
+        leave-active-class="animated bounceOutBottom">
+          <div style="" v-if="activeIndex === '1-1'">
+            <el-card shadow="always">
+              <div slot="header" class="clearfix">
+                <el-button style="float: right; padding: 3px 0" type="text" @click="closeOneMenu()" icon="el-icon-close"></el-button>
+              </div>
+              <el-table :data="tableData"  style="width: 100%">
+                <el-table-column
+                  prop="id"
+                  label="编号"
+                  width="50"
+                  align="center">
+                </el-table-column>
+                <el-table-column
+                  prop="code"
+                  label="GLN位置扩展编码"
+                  width="300"
+                  align="center">
+                </el-table-column>
+                <el-table-column
+                  prop="gln"
+                  label="GLN"
+                  width="125"
+                  align="center">
+                </el-table-column>
+                <el-table-column
+                  prop="newgln"
+                  label="新型GLN码"
+                  width="200"
+                  align="center">
+                </el-table-column>
+                <el-table-column
+                  prop="type"
+                  label="位置类型"
+                  width="100"
+                  align="center">
+                </el-table-column>
+                <el-table-column
+                  prop="name"
+                  label="参与方名称"
+                  width="100"
+                  align="center">
+                </el-table-column>
+                <el-table-column
+                  prop="address"
+                  label="邮政地址"
+                  width="280"
+                  align="center">
+                </el-table-column>
+                <el-table-column
+                  prop="phone"
+                  label="联系人"
+                  width="180"
+                  align="center">
+                </el-table-column>
+                <el-table-column
+                  prop="datetime"
+                  label="申请时间"
+                  width="180"
+                  align="center">
+                </el-table-column>
+                <el-table-column
+                  prop="lon"
+                  label="经度"
+                  width="180"
+                  align="center">
+                </el-table-column>
+                <el-table-column
+                  prop="lat"
+                  label="纬度"
+                  width="180"
+                  align="center">
+                </el-table-column>
+            </el-table>
+
+            </el-card>
+          </div>
+
+        </transition>
+      </div>
+
+
+
+
+
+
+      <div id="bMap" class="mapContainer"></div>
+    </div>
+  </div>
+</body>
+
+<script type="text/javascript" src="js/main.js"></script>
+</html>
