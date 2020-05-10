@@ -166,17 +166,17 @@
           <div v-if="activeIndex === '1-1'">
             <el-card shadow="always">
               <div slot="header" class="clearfix">
-                <span>数据加载</span>
+                <span>剖分索引大表</span>
                 <el-button style="float: right; padding: 3px 0" type="text" @click="closeOneMenu()" icon="el-icon-close"></el-button>
               </div>
-              <el-table v-loading="tableLoading" :data="tableData" height="250" style="width: 100%;">
+              <el-table v-loading="tableLoading" :data="tableData" height="250" style="width: 100%" row-style="height:0" cell-style="padding:0">
                 <el-scrollbar style="height:100%">
                   <el-table-column
                           prop="id"
                           label="编号"
-                          width="50"
                           align="center">
                   </el-table-column>
+
                   <el-table-column
                           prop="code"
                           label="GLN位置扩展编码"
@@ -184,13 +184,13 @@
                           align="center">
                   </el-table-column>
                   <el-table-column
-                          prop="gln"
+                          prop="GLN"
                           label="GLN"
                           width="125"
                           align="center">
                   </el-table-column>
                   <el-table-column
-                          prop="newgln"
+                          prop="newGLN"
                           label="新型GLN码"
                           width="200"
                           align="center">
@@ -214,26 +214,32 @@
                           align="center">
                   </el-table-column>
                   <el-table-column
-                          prop="phone"
+                          prop="Contact"
                           label="联系人"
                           width="180"
                           align="center">
                   </el-table-column>
                   <el-table-column
-                          prop="datetime"
+                          prop="DateTime"
                           label="申请时间"
                           width="180"
                           align="center">
                   </el-table-column>
                   <el-table-column
-                          prop="lon"
+                          prop="LON"
                           label="经度"
                           width="180"
                           align="center">
                   </el-table-column>
                   <el-table-column
-                          prop="lat"
+                          prop="LAT"
                           label="纬度"
+                          width="180"
+                          align="center">
+                  </el-table-column>
+                  <el-table-column
+                          prop="HEI"
+                          label="高度"
                           width="180"
                           align="center">
                   </el-table-column>

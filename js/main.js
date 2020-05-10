@@ -62,7 +62,7 @@ var vue = new Vue({
         _this.tableLoading = true
         this.$http.get('./data/data.json')
           .then(function (res) {
-            _this.tableData = res.data["SCGD"]
+            _this.tableData = res.data
           })
           .catch(err => { console.log(err) }
           )
