@@ -7,6 +7,10 @@ var vue = new Vue({
 
         tableData: [],
         tableLoading: false,
+        tableLoadingText: '正在加载数据',
+        // code这一列是否显示
+        codeColShow: false,
+        codeColName: 'test',
         searchForm: {
           minLon: '121.234',
           maxLon: '135,46',
@@ -51,7 +55,16 @@ var vue = new Vue({
           _this.resultLoading = false;
         },2000)
       },
-
+      createCode: function(){
+        let _this = this;
+        _this.tableLoading = true;
+        _this.tableLoadingText = '正在生成GLN位置扩展编码'
+        window.setTimeout(function(){
+          _this.tableLoading = false;
+          _this.codeColName = 'code'
+          _this.tableLoadingText = '正在加载数据'
+        },1000)
+      },
       change(e){
        this.$forceUpdate()
       },
