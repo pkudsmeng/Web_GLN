@@ -10,7 +10,9 @@ var vue = new Vue({
         tableLoadingText: '正在加载数据',
         // code这一列是否显示
         codeColShow: false,
-        codeColName: 'test',
+        codeCol: 'test',
+        newGLNShow: false,
+
         searchForm: {
           minLon: '121.234',
           maxLon: '135,46',
@@ -88,17 +90,7 @@ var vue = new Vue({
 
       },
 
-      codeGet() {
-        this.$alert('编码生成用时：3027.26ms', '编码生成', {
-          confirmButtonText: '确定',
-          callback: action => {
-            this.$message({
-              type: 'info',
-//              message: `action: ${ action }`
-            });
-          }
-        });
-      },
+
 
       guijiGet(){
         var PointArr = [
@@ -334,15 +326,30 @@ var vue = new Vue({
         }
 
       },
+
       createCode: function(){
         let _this = this;
         _this.tableLoading = true;
         _this.tableLoadingText = '正在生成GLN位置扩展编码'
         window.setTimeout(function(){
           _this.tableLoading = false;
-          _this.codeColName = 'code'
+          _this.codeCol = 'code'
+          _this.newGLN = 'newGLN'
           _this.tableLoadingText = '正在加载数据'
-        },1000)
+          _this.$alert('编码生成用时：3027.26ms', '编码生成', {
+              confirmButtonText: '确定',
+//              callback: action => {
+//                this.$message({
+//                  type: 'info',
+//                });
+//              }
+            });
+        },800)
+
+
+
+
+
       },
       change(e){
        this.$forceUpdate()
@@ -363,7 +370,6 @@ var vue = new Vue({
             console.log('数据加载完成')
           })
       },
-
 
 
       handleSelect(key, keyPath) {
