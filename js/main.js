@@ -336,6 +336,7 @@ var vue = new Vue({
           _this.codeCol = 'code'
           _this.newGLN = 'newGLN'
           _this.tableLoadingText = '正在加载数据'
+
           _this.$alert('编码生成用时：3027.26ms', '编码生成', {
               confirmButtonText: '确定',
 //              callback: action => {
