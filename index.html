@@ -249,12 +249,10 @@
               </el-table>
             </el-card>
           </div>
-
-
-          <div v-if="activeIndex === '2-2'">
+          <div v-if="ifShowBottomTable">
             <el-card shadow="always">
               <div slot="header" class="clearfix">
-                <el-button style="float: right; padding: 3px 0;" type="text" @click="closeOneMenu()" icon="el-icon-close"></el-button>
+                <el-button style="float: right; padding: 3px 0;" type="text" @click="closeOneBottomTable()" icon="el-icon-close"></el-button>
               </div>
               <el-table v-loading="tableLoading" :element-loading-text="tableLoadingText" :data="tableData" height="180" style="width: 100%" row-style="height:0" cell-style="padding:0">
                   <el-table-column
@@ -332,7 +330,6 @@
               </el-table>
             </el-card>
           </div>
-
           <div v-if="activeIndex === '2-3'">
             <el-card shadow="always">
               <div slot="header" class="clearfix">

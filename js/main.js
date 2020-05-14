@@ -1,4 +1,5 @@
 Vue.prototype.$http=axios
+var canvasLayer = null
 var vue = new Vue({
     el: '#app',
     data() {
@@ -40,7 +41,9 @@ var vue = new Vue({
           dis: '1000'
         },
 
-        resultLoading: false
+        resultLoading: false,
+
+        ifShowBottomTable: false
       }
     },
     methods: {
@@ -106,8 +109,13 @@ var vue = new Vue({
 
       },
 
+    closeOneBottomTable:function(){
+            this.ifShowBottomTable = false;
+    },
+
       test2: function(){
         let _this = this;
+        _this.ifShowBottomTable = true;
         _this.resultLoading = true;
         window.setTimeout(function()
         {
@@ -119,7 +127,10 @@ var vue = new Vue({
 
         //绘制矩形
         map.centerAndZoom(new BMap.Point(_this.searchForm.minLon,_this.searchForm.minLat), 12);
-        var canvasLayer = new BMap.CanvasLayer({
+        if(canvasLayer != null){
+            map.removeOverlay(canvasLayer)
+        }
+        canvasLayer = new BMap.CanvasLayer({
             update: update
         });
 
