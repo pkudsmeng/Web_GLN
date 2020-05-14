@@ -46,7 +46,7 @@ html, body {
     width: 300px;
     position: absolute;
     left: 30px;
-    top: 50%;
+    top: 30%;
     z-index: 1000;
     transform: translateY(-50%);
     -webkit-transform: translateY(-50%);
@@ -86,4 +86,12 @@ html, body {
 {
     transform: translateX(-330px);
     opacity: 0;
+}
+
+.BMap_cpyCtrl {
+            display: none;
+        }
+        .anchorBL {
+            display: none;
+        }
 }

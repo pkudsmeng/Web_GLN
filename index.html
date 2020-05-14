@@ -12,7 +12,7 @@
   <!-- 引入组件库 -->
   <script src="plugin/element-2.10.1/index.js"></script>
   <link href="plugin/animate/animate@3.5.1.css" rel="stylesheet" type="text/css">
-  <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=VF8jI693CyatihLr1neBClQDUBvjoyzF"></script>
+  <script type="text/javascript" src="http://api.map.baidu.com/api?v=3.0&ak=VF8jI693CyatihLr1neBClQDUBvjoyzF"></script>
 
   <link rel="stylesheet" href="css/main.css">
 
@@ -124,7 +124,7 @@
           <div v-if="activeIndex === '2-3'">
             <el-card shadow="always">
               <div slot="header" class="clearfix">
-                <span>半径搜索</span>
+                <span>距离查询</span>
                 <el-button style="float: right; padding: 3px 0" type="text" @click="closeOneMenu()" icon="el-icon-close"></el-button>
               </div>
               <el-form ref="form" :model="searchDis" label-width="150px" size="mini">
@@ -141,15 +141,18 @@
               </el-form>
               <div class="functionButton">
                 <el-button size="mini" type="danger" icon="el-icon-delete" @click="test" plain round>清除选择</el-button>
-                <el-button size="mini" icon="el-icon-search" type="primary" @click="test2" plain round>查询</el-button>
+                <el-button size="mini" icon="el-icon-search" type="primary" @click="radius" plain round>查询</el-button>
               </div>
               <hr>
               <el-form
                v-loading="resultLoading"
                element-loading-text="正在查询请稍后..."
-               ref="form1" :model="resultGLN" label-width="110px" size="mini" style="margin-top:10px">
+               ref="form1" :model="searchDis" label-width="110px" size="mini" style="margin-top:10px">
+                <el-form-item label="查出GLN(个)">
+                  <el-input  v-model="searchDis.count"></el-input>
+                </el-form-item>
                 <el-form-item label="查询用时(ms)">
-                  <el-input  v-model="resultGLN.searchingTime"></el-input>
+                  <el-input  v-model="searchDis.searchingTime"></el-input>
                 </el-form-item>
               </el-form>
             </el-card>
@@ -170,7 +173,172 @@
                 <el-button style="float: right; padding: 3px 0;" type="text" @click="closeOneMenu()" icon="el-icon-close"></el-button>
                 <el-button size="mini" style="float:right;margin-right:20px" @click="createCode()">编码生成</el-button>
               </div>
-              <el-table v-loading="tableLoading" :element-loading-text="tableLoadingText" :data="tableData" height="450" style="width: 100%" row-style="height:0" cell-style="padding:0">
+              <el-table v-loading="tableLoading" :element-loading-text="tableLoadingText" :data="tableData" height="430" style="width: 100%" row-style="height:0" cell-style="padding:0">
+                  <el-table-column
+                          prop="id"
+                          label="编号"
+                          width="50"
+                          align="center">
+                  </el-table-column>
+                  <el-table-column
+                          :prop="codeCol"
+                          label="GLN位置扩展编码"
+                          width="200"
+                          align="center">
+                  </el-table-column>
+                  <el-table-column
+                          prop="GLN"
+                          label="GLN"
+                          width="150"
+                          align="center">
+                  </el-table-column>
+                  <el-table-column
+                          :prop="newGLN"
+                          label="新型GLN码"
+                          width="350"
+                          align="center">
+                  </el-table-column>
+                  <el-table-column
+                          prop="type"
+                          label="位置类型"
+                          width="80"
+                          align="center">
+                  </el-table-column>
+                  <el-table-column
+                          prop="name"
+                          label="参与方名称"
+                          width="200"
+                          align="center">
+                  </el-table-column>
+                  <el-table-column
+                          prop="address"
+                          label="邮政地址"
+                          width="300"
+                          align="center">
+                  </el-table-column>
+                  <el-table-column
+                          prop="Contact"
+                          label="联系人"
+                          width="150"
+                          align="center">
+                  </el-table-column>
+                  <el-table-column
+                          prop="DateTime"
+                          label="申请时间"
+                          width="150"
+                          align="center">
+                  </el-table-column>
+                  <el-table-column
+                          prop="LON"
+                          label="经度"
+                          width="150"
+                          align="center">
+                  </el-table-column>
+                  <el-table-column
+                          prop="LAT"
+                          label="纬度"
+                          width="150"
+                          align="center">
+                  </el-table-column>
+                  <el-table-column
+                          prop="HEI"
+                          label="高度"
+                          width="150"
+                          align="center">
+                  </el-table-column>
+              </el-table>
+            </el-card>
+          </div>
+
+
+          <div v-if="activeIndex === '2-2'">
+            <el-card shadow="always">
+              <div slot="header" class="clearfix">
+                <el-button style="float: right; padding: 3px 0;" type="text" @click="closeOneMenu()" icon="el-icon-close"></el-button>
+              </div>
+              <el-table v-loading="tableLoading" :element-loading-text="tableLoadingText" :data="tableData" height="180" style="width: 100%" row-style="height:0" cell-style="padding:0">
+                  <el-table-column
+                          prop="id"
+                          label="编号"
+                          width="50"
+                          align="center">
+                  </el-table-column>
+                  <el-table-column
+                          :prop="codeCol"
+                          label="GLN位置扩展编码"
+                          width="200"
+                          align="center">
+                  </el-table-column>
+                  <el-table-column
+                          prop="GLN"
+                          label="GLN"
+                          width="150"
+                          align="center">
+                  </el-table-column>
+                  <el-table-column
+                          :prop="newGLN"
+                          label="新型GLN码"
+                          width="350"
+                          align="center">
+                  </el-table-column>
+                  <el-table-column
+                          prop="type"
+                          label="位置类型"
+                          width="80"
+                          align="center">
+                  </el-table-column>
+                  <el-table-column
+                          prop="name"
+                          label="参与方名称"
+                          width="200"
+                          align="center">
+                  </el-table-column>
+                  <el-table-column
+                          prop="address"
+                          label="邮政地址"
+                          width="300"
+                          align="center">
+                  </el-table-column>
+                  <el-table-column
+                          prop="Contact"
+                          label="联系人"
+                          width="150"
+                          align="center">
+                  </el-table-column>
+                  <el-table-column
+                          prop="DateTime"
+                          label="申请时间"
+                          width="150"
+                          align="center">
+                  </el-table-column>
+                  <el-table-column
+                          prop="LON"
+                          label="经度"
+                          width="150"
+                          align="center">
+                  </el-table-column>
+                  <el-table-column
+                          prop="LAT"
+                          label="纬度"
+                          width="150"
+                          align="center">
+                  </el-table-column>
+                  <el-table-column
+                          prop="HEI"
+                          label="高度"
+                          width="150"
+                          align="center">
+                  </el-table-column>
+              </el-table>
+            </el-card>
+          </div>
+
+          <div v-if="activeIndex === '2-3'">
+            <el-card shadow="always">
+              <div slot="header" class="clearfix">
+                <el-button style="float: right; padding: 3px 0;" type="text" @click="closeOneMenu()" icon="el-icon-close"></el-button>
+              </div>
+              <el-table v-loading="tableLoading" :element-loading-text="tableLoadingText" :data="tableData" height="180" style="width: 100%" row-style="height:0" cell-style="padding:0">
                   <el-table-column
                           prop="id"
                           label="编号"

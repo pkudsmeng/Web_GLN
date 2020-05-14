@@ -3,7 +3,7 @@ var vue = new Vue({
     el: '#app',
     data() {
       return {
-        activeIndex: '3-2',
+        activeIndex: '2-2',
 
         tableData: [],
         tableLoading: false,
@@ -13,11 +13,12 @@ var vue = new Vue({
         codeCol: 'test',
         newGLNShow: false,
 
+
         searchForm: {
-          minLon: '121.234',
-          maxLon: '135,46',
-          minLat: '32.908',
-          maxLat: '45.98',
+          minLon: '107.2341',
+          maxLon: '109.4653',
+          minLat: '32.9098',
+          maxLat: '33.1809',
         },
 
         resultForm: {
@@ -53,6 +54,122 @@ var vue = new Vue({
 
       test: () => {
         alert("这个是按钮的点击事件")
+      },
+
+      radius: function(){
+        let _this = this;
+        _this.resultLoading = true;
+        window.setTimeout(function()
+        {
+            _this.searchDis.count = parseInt(Math.random() * 80);
+            _this.searchDis.searchingTime = Math.random(0.003,0.05) * 1000;
+            _this.resultLoading = false;
+        },_this.resultForm.searchingTime)
+
+        _this.tableLoading = true
+        this.$http.get('./data/radius.json')
+          .then(function (res) {
+            _this.tableData = res.data
+          })
+          .catch(err => { console.log(err) }
+          )
+          .finally(res => {
+            _this.tableLoading = false
+            console.log('数据加载完成')
+
+          })
+          _this.tableLoading = false;
+          _this.codeCol = 'code'
+          _this.newGLN = 'newGLN'
+          _this.tableLoadingText = '正在加载数据'
+
+        var point = new BMap.Point(100.771252,21.957884); // 设置中心点 中心点是四川成都
+
+        var myIcon = new BMap.Icon("http://api.map.baidu.com/img/markers.png", new BMap.Size(22, 25), {
+
+		    offset: new BMap.Size(10, 25),
+		    imageOffset: new BMap.Size(0, 0 - 10 * 30)
+
+			});
+
+		map.centerAndZoom(point, 13);
+
+
+
+        var marker = new BMap.Marker(point,{icon: myIcon});// 创建标注
+        map.addOverlay(marker);
+        marker.enableDragging(); //marker可拖拽
+
+        var circle = new BMap.Circle(point,3000,{fillColor:"blue", strokeWeight: 1 ,fillOpacity: 0.3, strokeOpacity: 0.3});//设置覆盖物的参数，中心坐标，半径，颜色
+        map.addOverlay(circle);//在地图上显示圆形覆盖物
+        console.log(marker)
+
+      },
+
+      test2: function(){
+        let _this = this;
+        _this.resultLoading = true;
+        window.setTimeout(function()
+        {
+            _this.resultForm.count = parseInt(Math.random() * 80);
+            _this.resultForm.searchingTime = Math.random(0.003,0.05) * 1000;
+            _this.resultLoading = false;
+        },_this.resultForm.searchingTime)
+
+
+        //绘制矩形
+        map.centerAndZoom(new BMap.Point(_this.searchForm.minLon,_this.searchForm.minLat), 12);
+        var canvasLayer = new BMap.CanvasLayer({
+            update: update
+        });
+
+        function update() {
+            var ctx = this.canvas.getContext("2d");
+
+            if (!ctx) {
+                return;
+            }
+
+            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+            var temp = {};
+            ctx.fillStyle = "rgba(50, 106, 255, 0.1)";
+
+            ctx.beginPath();
+            var data = [
+            new BMap.Point(_this.searchForm.minLon,_this.searchForm.minLat),
+            ];
+
+            for (var i = 0, len = data.length; i < len; i++) {
+
+                // 绘制时需要对经纬度进行转换
+                var pixel = map.pointToPixel(data[i]);
+
+                ctx.fillRect(pixel.x, pixel.y, 300, 250);
+            }
+    }
+
+        map.addOverlay(canvasLayer);
+
+
+        _this.tableLoading = true
+        this.$http.get('./data/range.json')
+          .then(function (res) {
+            _this.tableData = res.data
+          })
+          .catch(err => { console.log(err) }
+          )
+          .finally(res => {
+            _this.tableLoading = false
+            console.log('数据加载完成')
+
+          })
+          _this.tableLoading = false;
+          _this.codeCol = 'code'
+          _this.newGLN = 'newGLN'
+          _this.tableLoadingText = '正在加载数据'
+
+
       },
 
       shuxing: function(){
@@ -373,11 +490,13 @@ var vue = new Vue({
       },
 
 
+
       handleSelect(key, keyPath) {
         this.activeIndex = key
         if(this.activeIndex === '1-1'){
           this.loadingData()
         }
+
 //        this.$message({
 //          message: '当前选中菜单：'+ key,
 //          type: 'success'
@@ -389,6 +508,5 @@ var vue = new Vue({
     },
     mounted: function() {
       this.initialMap()
-      this.loadingData()
     }
   })
