@@ -91,6 +91,7 @@ var vue = new Vue({
       codeGet() {
         this.$alert('编码生成用时：3027.26ms', '编码生成', {
           confirmButtonText: '确定',
+          modal:false,
           callback: action => {
             this.$message({
               type: 'info',
