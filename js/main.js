@@ -51,7 +51,7 @@ var vue = new Vue({
         // GL版命名空间为BMapGL
         // 按住鼠标右键，修改倾斜角和角度
         window.map = new BMap.Map("bMap");    // 创建Map实例
-        map.centerAndZoom(new BMap.Point(115.404, 30.915), 15);  // 初始化地图,设置中心点坐标和地图级别
+        map.centerAndZoom(new BMap.Point(115.404, 30.815), 15);  // 初始化地图,设置中心点坐标和地图级别
         map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
       },
 
@@ -60,7 +60,12 @@ var vue = new Vue({
       },
 
       radius: function(){
+
+        map.clearOverlays();
+
         let _this = this;
+        _this.ifShowBottomTable = true;
+
         _this.resultLoading = true;
         window.setTimeout(function()
         {
@@ -88,6 +93,8 @@ var vue = new Vue({
 
         var point = new BMap.Point(100.771252,21.957884); // 设置中心点 中心点是四川成都
 
+
+
         var myIcon = new BMap.Icon("http://api.map.baidu.com/img/markers.png", new BMap.Size(22, 25), {
 
 		    offset: new BMap.Size(10, 25),
@@ -97,15 +104,13 @@ var vue = new Vue({
 
 		map.centerAndZoom(point, 13);
 
-
-
         var marker = new BMap.Marker(point,{icon: myIcon});// 创建标注
         map.addOverlay(marker);
         marker.enableDragging(); //marker可拖拽
 
         var circle = new BMap.Circle(point,3000,{fillColor:"blue", strokeWeight: 1 ,fillOpacity: 0.3, strokeOpacity: 0.3});//设置覆盖物的参数，中心坐标，半径，颜色
         map.addOverlay(circle);//在地图上显示圆形覆盖物
-        console.log(marker)
+
 
       },
 
@@ -127,6 +132,7 @@ var vue = new Vue({
 
         //绘制矩形
         map.centerAndZoom(new BMap.Point(_this.searchForm.minLon,_this.searchForm.minLat), 12);
+
         if(canvasLayer != null){
             map.removeOverlay(canvasLayer)
         }
@@ -156,7 +162,7 @@ var vue = new Vue({
                 // 绘制时需要对经纬度进行转换
                 var pixel = map.pointToPixel(data[i]);
 
-                ctx.fillRect(pixel.x, pixel.y, 300, 250);
+                ctx.fillRect(pixel.x-200, pixel.y-200, 300, 300);
             }
     }
 
