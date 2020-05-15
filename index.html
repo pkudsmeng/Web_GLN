@@ -55,29 +55,29 @@
                 <span>经纬度查询</span>
                 <el-button style="float: right; padding: 3px 0" type="text" @click="closeOneMenu()" icon="el-icon-close"></el-button>
               </div>
-              <el-form ref="form" :model="searchForm" label-width="80px" size="mini">
+              <el-form ref="form" :model="extentSearchForm" label-width="80px" size="mini">
                 <el-form-item label="左下">
                   <el-col :span="11">
-                    <el-input  v-model="searchForm.minLon"></el-input>
+                    <el-input  v-model="extentSearchForm.minLon"></el-input>
                   </el-col>
                   <el-col class="line" :span="2" style="text-align: center;">,</el-col>
                   <el-col :span="11">
-                    <el-input  v-model="searchForm.minLat"></el-input>
+                    <el-input  v-model="extentSearchForm.minLat"></el-input>
                   </el-col>
                 </el-form-item>
                 <el-form-item label="右上">
                   <el-col :span="11">
-                    <el-input  v-model="searchForm.maxLon"></el-input>
+                    <el-input  v-model="extentSearchForm.maxLon"></el-input>
                   </el-col>
                   <el-col class="line" :span="2" style="text-align: center;">,</el-col>
                   <el-col :span="11">
-                    <el-input  v-model="searchForm.maxLat"></el-input>
+                    <el-input  v-model="extentSearchForm.maxLat"></el-input>
                   </el-col>
                 </el-form-item>
               </el-form>
               <div class="functionButton">
                 <el-button size="mini" type="danger" icon="el-icon-delete" @click="test" plain round>清除选择</el-button>
-                <el-button size="mini" icon="el-icon-search" type="primary" @click="test2" plain round>网格查询</el-button>
+                <el-button size="mini" icon="el-icon-search" type="primary" @click="GridSearchByExtent" plain round>网格查询</el-button>
               </div>
               <hr>
               <el-form
@@ -253,7 +253,7 @@
           <div v-if="ifShowBottomTable">
             <el-card shadow="always">
               <div slot="header" class="clearfix">
-                <el-button style="float: right; padding: 3px 0;" type="text" @click="closeOneBottomTable()" icon="el-icon-close"></el-button>
+                <el-button style="float: right; padding: 3px 0;" type="text" @click="CloseRangeTable()" icon="el-icon-close"></el-button>
               </div>
               <el-table v-loading="tableLoading" :element-loading-text="tableLoadingText" :data="tableData" height="180" style="width: 100%" row-style="height:0" cell-style="padding:0">
                   <el-table-column
